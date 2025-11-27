@@ -28,42 +28,203 @@ def normalize_answer(text: str) -> str:
 # Track → Career Profile mapping
 # -----------------------------
 TRACK_TO_PROFILE = {
-    "analytical": "Data Science",
-    "communication": "General",
-    "creative": "Design",
-    "interpersonal": "General",
+    "analytical": [
+        "Data Scientist",
+        "Business Analyst",
+        "AI Researcher"
+    ],
+
+    "communication": [
+        "Software Engineer",
+        "Full-Stack Developer",
+        "DevOps Engineer"
+    ],
+
+    "creative": [
+        "UI/UX Designer",
+        "Product Designer"
+    ],
+
+    "interpersonal": [
+        "HR Specialist",
+        "Customer Success Manager",
+        "Career Coach",
+        "Client Relationship Manager"
+    ],
+
+    "management": [
+        "Project Manager",
+        "Product Manager",
+        "Operations Manager",
+        "Team Lead"
+    ]
 }
+
 
 # -----------------------------
 # Career Skill Profiles
 # -----------------------------
 CAREER_SKILL_PROFILES = {
-    "Data Science": {
-        "Python": 5,
-        "Statistics": 5,
-        "ML/AI": 5,
-        "Data Visualization": 4,
-        "Communication": 3
+    "Data Scientist": {
+        "python": 5,
+        "statistics": 5,
+        "machine_learning": 5,
+        "data_visualization": 4,
+        "communication": 3,
     },
-    "Software Engineering": {
-        "Python": 5,
-        "Algorithms": 5,
-        "System Design": 4,
-        "Databases": 4,
-        "Communication": 3
+    "Business Analyst": {
+        "excel": 5,
+        "data_analysis": 5,
+        "sql": 4,
+        "critical_thinking": 4,
+        "communication": 4,
     },
-    "Logical": {
-        "Problem Solving": 5,
-        "Reasoning": 5,
-        "Debugging": 4,
-        "Algorithms": 3
+    "AI Researcher": {
+        "python": 5,
+        "machine_learning": 5,
+        "deep_learning": 5,
+        "math": 5,
+        "research": 4,
     },
-    "General": {
-        "Fundamentals": 5,
-        "Projects": 4,
-        "Professional Skills": 3
-    }
+    "Software Engineer": {
+        "programming": 5,
+        "algorithms": 5,
+        "system_design": 4,
+        "databases": 4,
+        "communication": 3,
+    },
+    "Full-Stack Developer": {
+        "frontend": 4,
+        "backend": 4,
+        "databases": 4,
+        "api_design": 4,
+        "devops_basics": 3,
+    },
+    "DevOps Engineer": {
+        "linux": 5,
+        "cloud": 4,
+        "automation": 4,
+        "ci_cd": 4,
+        "scripting": 4,
+    },
+    "UI/UX Designer": {
+        "figma": 5,
+        "design_thinking": 5,
+        "user_research": 4,
+        "visual_design": 4,
+        "creativity": 5,
+    },
+    "Product Designer": {
+        "ui_design": 4,
+        "ux_design": 5,
+        "research": 4,
+        "prototyping": 5,
+        "visual_design": 4,
+    },
+    "HR Specialist": {
+        "communication": 5,
+        "empathy": 5,
+        "conflict_resolution": 4,
+        "organization": 4,
+    },
+    "Career Coach": {
+        "empathy": 5,
+        "communication": 5,
+        "counseling": 5,
+        "goal_setting": 4,
+    },
+    "Customer Success Manager": {
+        "relationship_management": 5,
+        "communication": 5,
+        "empathy": 5,
+        "crm_tools": 4,
+    },
+    "Project Manager": {
+        "leadership": 5,
+        "project_management": 5,
+        "agile_scrum": 4,
+        "communication": 5,
+        "risk_management": 4,
+    },
+    "Product Manager": {
+        "strategic_thinking": 5,
+        "communication": 5,
+        "market_research": 4,
+        "roadmapping": 4,
+        "data_analysis": 3,
+    },
 }
+# -----------------------------
+# Skill → Track mapping & inference helpers
+# -----------------------------
+SKILL_TO_TRACK = {
+    "python": "analytical",
+    "statistics": "analytical",
+    "machine_learning": "analytical",
+    "data_visualization": "analytical",
+    "excel": "analytical",
+    "data_analysis": "analytical",
+    "sql": "analytical",
+
+    "programming": "communication",
+    "algorithms": "communication",
+    "system_design": "communication",
+    "databases": "communication",
+
+    "figma": "creative",
+    "design_thinking": "creative",
+    "visual_design": "creative",
+    "user_research": "creative",
+
+    "empathy": "interpersonal",
+    "communication": "interpersonal",
+    "conflict_resolution": "interpersonal",
+
+    "leadership": "management",
+    "project_management": "management",
+    "agile_scrum": "management",
+}
+
+def infer_skill_scores_from_track_scores(track_scores: dict, career_profile: dict) -> dict:
+    """
+    Heuristic to estimate user's per-skill score (0..5) from their track scores.
+
+    - track_scores: {'analytical': 12, 'communication': 6, ...}
+    - career_profile: {'python': 5, 'statistics': 5, ...}
+
+    For each skill in career_profile:
+      - if SKILL_TO_TRACK maps it to a track, use that track's score (normalized).
+      - otherwise use average of all tracks.
+    """
+    # ensure numeric
+    numeric_track_scores = {}
+    for t, v in track_scores.items():
+        try:
+            numeric_track_scores[t] = float(v)
+        except (TypeError, ValueError):
+            numeric_track_scores[t] = 0.0
+
+    max_track_val = max(numeric_track_scores.values()) if numeric_track_scores else 1.0
+    max_track_val = max(1.0, max_track_val)
+
+    # compute average if needed (prevent division by zero)
+    avg_track = (sum(numeric_track_scores.values()) / len(numeric_track_scores)) if numeric_track_scores else 0.0
+
+    skill_estimates = {}
+    for skill in career_profile.keys():
+        key = skill.lower().replace(" ", "_")
+        mapped_track = SKILL_TO_TRACK.get(key)
+        if mapped_track and mapped_track in numeric_track_scores:
+            raw = numeric_track_scores.get(mapped_track, 0.0)
+        else:
+            raw = avg_track
+
+        # normalize raw to 0..5
+        est = (raw / max_track_val) * 5.0
+        skill_estimates[skill] = round(est, 2)
+
+    return skill_estimates
+
 
 # -----------------------------
 # Generate Skill Gaps
@@ -85,14 +246,25 @@ def generate_gap_analysis(user_scores: dict, career_profile: dict) -> list[dict]
     return gap_table
 
 # Wrapper for old usage
-def generate_skill_gaps_from_result(result):
+def generate_skill_gaps_from_result(result, career_name):
+    required_skills = CAREER_SKILL_PROFILES.get(career_name, {})
     user_scores = result.scores or {}
-    mapped_profile = TRACK_TO_PROFILE.get(result.primary_track, "General")
-    career_profile = CAREER_SKILL_PROFILES.get(mapped_profile, {})
 
-    gaps = generate_gap_analysis(user_scores, career_profile)
+    gaps = []
+
+    for skill, required in required_skills.items():
+        current = user_scores.get(skill, 0)
+        gap = round(required - current, 2)
+
+        gaps.append({
+            "skill": skill,
+            "gap": max(gap, 0),
+            "action": "Upskill required" if gap > 0 else "No action needed",
+        })
 
     return {"gaps": gaps}
+
+
 
 # -----------------------------
 # Score Assessment
@@ -128,11 +300,14 @@ def score_assessment(assessment: Assessment) -> dict:
     total_score = sum(section_scores.values())
 
     primary_track, secondary_track = choose_primary_secondary_tracks(track_scores)
+    careers_primary = TRACK_TO_PROFILE.get(primary_track, [])
+    careers_secondary = TRACK_TO_PROFILE.get(secondary_track, [])
 
-    mapped_profile = TRACK_TO_PROFILE.get(primary_track, "General")
-    career_profile = CAREER_SKILL_PROFILES.get(mapped_profile, {})
+    primary_career = careers_primary[0] if careers_primary else None
+    career_profile = CAREER_SKILL_PROFILES.get(primary_career, {})
 
-    gaps = generate_gap_analysis(track_scores, career_profile)
+    user_skill_estimates = infer_skill_scores_from_track_scores(track_scores, career_profile)
+    gaps = generate_gap_analysis(user_skill_estimates, career_profile)
 
     score_breakdown = {
         **section_scores,
@@ -140,6 +315,8 @@ def score_assessment(assessment: Assessment) -> dict:
         "total": total_score,
         "primary_track": primary_track,
         "secondary_track": secondary_track,
+        "primary_careers": careers_primary,
+        "secondary_careers": careers_secondary,
         "gaps": {g["skill"]: g for g in gaps},
     }
 
@@ -168,7 +345,7 @@ def choose_primary_secondary_tracks(per_track_scores: Dict[str, float]) -> tuple
 # Career recommendations
 # -----------------------------
 def recommend_careers(primary_track: str, limit=3):
-    qs = Career.objects.filter(track__iexact=primary_track)
+    qs = Career.objects.filter(track__contains=[primary_track])
     if qs.exists():
         return list(qs[:limit])
     return list(Career.objects.all()[:limit])
@@ -188,6 +365,8 @@ def generate_five_year_plan_dynamic(per_track_scores: dict) -> list[dict]:
             except (ValueError, TypeError):
                 numeric_scores[k] = 0.0
         primary_track = max(numeric_scores.items(), key=lambda x: x[1])[0]
+        primary_career = TRACK_TO_PROFILE.get(primary_track, ["General"])[0]
+
 
     track_goals = {
         "Data Science": [
@@ -220,13 +399,13 @@ def generate_five_year_plan_dynamic(per_track_scores: dict) -> list[dict]:
         ]
     }
 
-    goals = track_goals.get(primary_track, track_goals["General"])
+    goals = track_goals.get(primary_career, track_goals["General"])
 
     total_score = sum(numeric_scores.values())
     max_score = len(numeric_scores) or 1
     percent = (total_score / max_score) * 100.0
 
     if percent < 50:
-        goals[0] = f"Start with basics in {primary_track}"
+        goals[0] = f"Start with basics in {primary_career}"
 
     return [{"year": i + 1, "goal": g} for i, g in enumerate(goals)]

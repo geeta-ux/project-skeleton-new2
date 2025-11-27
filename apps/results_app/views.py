@@ -36,6 +36,17 @@ class PlanViewSet(viewsets.ModelViewSet):
 
 # HTML summary view
 # apps/results_app/views.py
+def map_track_to_career(track):
+    TRACK_TO_CAREERS = {
+        "analytical": ["Data Scientist", "Business Analyst", "AI Researcher"],
+        "communication": ["Software Engineer", "Full-Stack Developer", "DevOps Engineer"],
+        "creative": ["UI/UX Designer", "Product Designer"],
+        "interpersonal": ["HR Specialist", "Project Coordinator", "Team Manager"],
+        "management": ["Project Manager", "Product Manager", "Operations Manager"],
+    }
+    # Return the FIRST career as the "primary display"
+    return TRACK_TO_CAREERS.get(track, ["General"])[0]
+
 
 @login_required
 def result_summary(request, result_id):
@@ -48,10 +59,11 @@ def result_summary(request, result_id):
     raw_secondary = result.secondary_track
 
     # MAPPED tracks shown to the user (Data Science, Design...)
-    primary_track = TRACK_TO_PROFILE.get(raw_primary, "General")
-    secondary_track = TRACK_TO_PROFILE.get(raw_secondary, "General")
+    primary_career = map_track_to_career(raw_primary)
+    secondary_career = map_track_to_career(raw_secondary)
+
      # Compute skill gaps
-    skill_gaps = generate_skill_gaps_from_result(result)
+    skill_gaps = generate_skill_gaps_from_result(result,primary_career)
 
     # 5-year plan
     plan = generate_five_year_plan_dynamic(result.scores)
@@ -59,13 +71,12 @@ def result_summary(request, result_id):
     
 
     # Recommended careers
-    careers = recommend_careers(primary_track, limit=3)
+    careers = recommend_careers(raw_primary, limit=3)
 
     return render(request, "results/summary.html", {
         "result": result,
-        "user": request.user,   # pass the user
-        "score_breakdown": result.score_breakdown,
-        "tracks": result.scores or {},
+        "primary_career": primary_career,
+        "secondary_career": secondary_career,
         "careers": careers,
         "plan": plan,
         "skill_gaps": skill_gaps,
@@ -81,10 +92,13 @@ def result_summary(request, result_id):
 def download_plan_pdf(request, result_id):
     result = get_object_or_404(Result, id=result_id, user=request.user)
 
+    primary_track = result.primary_track or "analytical"  # fallback if missing
+    careers_primary = TRACK_TO_PROFILE.get(primary_track, [])
+    primary_career = careers_primary[0] if careers_primary else None
+
     # Skill gaps & 5-year plan
-    skill_gaps = generate_skill_gaps_from_result(result).get("gaps", [])
+    skill_gaps = generate_skill_gaps_from_result(result, primary_career).get("gaps", [])
     plan = generate_five_year_plan_dynamic(result.scores)
-    primary_track = result.primary_track or "General"
     careers = recommend_careers(primary_track, limit=3)
 
     # PDF setup

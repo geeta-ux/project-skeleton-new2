@@ -11,14 +11,16 @@
         <div class="card-body">
 
             <!-- Primary Track -->
-            <h4 class="fw-bold">{{ result.primary_track }}</h4>
-            <p class="text-muted">Primary Track</p>
+            <!-- Primary Career -->
+            <h4 class="fw-bold">{{ primary_career }}</h4>
+            <p class="text-muted">Primary Track: {{ result.primary_track|capfirst }}</p>
 
-            <!-- Secondary Track -->
+            <!-- Secondary Career -->
             {% if result.secondary_track %}
-            <h5 class="fw-bold mt-3">{{ result.secondary_track }}</h5>
-            <p class="text-muted">Secondary Track</p>
+            <h5 class="fw-bold mt-3">{{ secondary_career }}</h5>
+            <p class="text-muted">Secondary Track: {{ result.secondary_track|capfirst }}</p>
             {% endif %}
+
 
             <!-- Track Scores -->
             <h5 class="fw-bold mt-4">Your Track Scores</h5>
