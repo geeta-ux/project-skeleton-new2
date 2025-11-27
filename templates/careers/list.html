@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Careers{% endblock %}
+
+{% block content %}
+<h2 class="fw-bold mb-4">Career Library</h2>
+
+<div class="row">
+    {% for c in careers %}
+    <div class="col-md-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="fw-bold">{{ c.title }}</h5>
+                <p class="text-muted">{{ c.track }}</p>
+                <a href="{% url 'careers_app:detail' c.id %}" class="btn btn-primary btn-sm">View</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

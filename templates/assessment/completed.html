@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Assessment Completed{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center">
+    <h2 class="fw-bold">Assessment Complete!</h2>
+    <p>Thank you for completing the assessment!</p>
+
+    {% if results %}
+        <ul class="list-group mt-4">
+            {% for result in results %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>Result #{{ result.id }} - {{ result.primary_track }}</span>
+                <a href="{% url 'results_app:latest_summary' result.id %}" class="btn btn-primary btn-sm">
+                    View Summary
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-muted mt-3">No completed assessments found.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="fw-bold mb-4">Dashboard</h2>
+
+<div class="row">
+
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h4>Your Assessments</h4>
+                <p class="text-muted">Track progress and view results.</p>
+
+                <a href="/assessment/start/" class="btn btn-primary">Start New Assessment</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h4>Explore Careers</h4>
+                <p class="text-muted">Browse 100+ curated career pathways.</p>
+                <a href="/careers/" class="btn btn-outline-secondary">Browse Careers</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

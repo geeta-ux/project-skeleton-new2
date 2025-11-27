@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}{{ career.title }}{% endblock %}
+
+{% block content %}
+<h2 class="fw-bold">{{ career.title }}</h2>
+<p class="text-muted">{{ career.track }}</p>
+
+{% if career.description %}
+    <p>{{ career.description }}</p>
+{% endif %}
+
+{% if career.skills %}
+    <h5 class="mt-3">Required Skills</h5>
+    <ul>
+        {% for skill in career.skills %}
+            <li>{{ skill }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if career.sample_roles %}
+    <h5 class="mt-3">Sample Roles</h5>
+    <ul>
+        {% for role in career.sample_roles %}
+            <li>{{ role }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if career.avg_salary_range %}
+    <p class="mt-3"><strong>Average Salary:</strong> {{ career.avg_salary_range }}</p>
+{% endif %}
+
+{% if career.kb_entries.exists %}
+    <h5 class="mt-4">Knowledge Base</h5>
+    <ul>
+        {% for kb in career.kb_entries.all %}
+            <li>
+                <a href="{% url 'careers_app:kb_detail' kb.id %}">{{ kb.title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+
+<a href="{% url 'careers_app:list' %}" class="btn btn-outline-dark mt-4">Back to Careers</a>
+{% endblock %}

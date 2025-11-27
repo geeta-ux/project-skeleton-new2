@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}Your Career Summary{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <h2 class="fw-bold">Your Career Recommendation</h2>
+
+    {% if result %}
+    <div class="card shadow-sm mt-4">
+        <div class="card-body">
+
+            <!-- Primary Track -->
+            <h4 class="fw-bold">{{ result.primary_track }}</h4>
+            <p class="text-muted">Primary Track</p>
+
+            <!-- Secondary Track -->
+            {% if result.secondary_track %}
+            <h5 class="fw-bold mt-3">{{ result.secondary_track }}</h5>
+            <p class="text-muted">Secondary Track</p>
+            {% endif %}
+
+            <!-- Track Scores -->
+            <h5 class="fw-bold mt-4">Your Track Scores</h5>
+            {% if result and result.score_breakdown %}
+            <p>Total Score: {{ result.score_breakdown.total }}</p>
+            {% for track, score in result.score_breakdown.tracks.items %}
+            <p>{{ track|capfirst }}: {{ score }}</p>
+            {% endfor %}
+            {% else %}
+            <p>Scores not available.</p>
+            {% endif %}
+
+
+            <!-- 5-Year Development Plan -->
+            <h5 class="fw-bold mt-4">Your 5-Year Development Plan</h5>
+            {% if plan %}
+            <ul class="list-group mt-2">
+                {% for item in plan %}
+                <li class="list-group-item">
+                    <strong>Year {{ item.year }}:</strong> {{ item.goal }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-muted">Plan not available.</p>
+            {% endif %}
+
+            <!-- Recommended Careers -->
+            <h5 class="fw-bold mt-4">Top Recommended Careers</h5>
+            {% if careers %}
+            <ul class="list-group mt-2">
+                {% for career in careers %}
+                <li class="list-group-item">
+                    <strong>{{ career.title }}</strong> – {{ career.description }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-muted">No career recommendations available.</p>
+            {% endif %}
+            <!-- Skill Gap Analysis Table -->
+            <h2>Skill Gap Analysis</h2>
+
+            {% if skill_gaps and skill_gaps.gaps %}
+            <table border="1" cellspacing="0" cellpadding="8">
+                <thead>
+                    <tr>
+                        <th>Skill</th>
+                        <th>Gap</th>
+                        <th>Recommended Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in skill_gaps.gaps %}
+                    <tr>
+                        <td>{{ item.skill }}</td>
+                        <td>{{ item.gap }}</td>
+                        <td>{{ item.action }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No skill gap analysis available.</p>
+            {% endif %}
+
+
+
+            <!-- PDF Download Button -->
+            <div class="mt-4">
+                <a href="{% url 'results_app:download_plan_pdf' result.id %}" class="btn btn-primary">
+                    Download Plan (PDF)
+                </a>
+            </div>
+
+        </div>
+    </div>
+    {% else %}
+    <p>No results found.</p>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Career Plan - {{ user.name|default:user.email }}</title>
+
+    <style>
+        body {
+            font-family: DejaVu Sans, Arial, sans-serif;
+            color: #333;
+            padding: 25px;
+        }
+        h1, h2 { color: #004aad; }
+        h3 { color: #0a58ca; margin-bottom: 5px; }
+        ul { margin-top: 5px; margin-left: 15px; }
+        .year-block { margin-bottom: 15px; }
+        .section { margin-top: 20px; }
+        .meta { margin-bottom: 10px; }
+    </style>
+</head>
+
+<body>
+
+    <h1>Career Development Plan</h1>
+
+    <div class="meta">
+        <p><strong>Name:</strong> {{ user.name|default:user.email }}</p>
+        <p><strong>Date:</strong> {{ result.created_at|date:"d M Y" }}</p>
+    </div>
+
+    <div class="section">
+        <h2>Career Track Recommendations</h2>
+        <p><strong>Primary Track:</strong> {{ result.primary_track }}</p>
+        <p><strong>Secondary Track:</strong> {{ result.secondary_track }}</p>
+    </div>
+
+    <div class="section">
+        <h2>Five-Year Career Roadmap</h2>
+
+        {% for p in plans %}
+        <div class="year-block">
+            <h3>Year {{ p.year }}</h3>
+            <ul>
+                {% for key, val in p.plan_json.items %}
+                    <li>
+                        <strong>{{ key|capfirst }}:</strong>
+                        {% if val is list %}
+                            {{ val|join:", " }}
+                        {% else %}
+                            {{ val }}
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>
