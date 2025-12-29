@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Psychometric Assessment{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+
+            <h2 class="fw-bold mb-3">
+                Psychometric Assessment
+            </h2>
+
+            <p class="text-muted mb-4">
+                This assessment helps us understand your personality,
+                interests, and work preferences so we can recommend
+                suitable career paths.
+            </p>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body text-start">
+                    <h5 class="fw-semibold">What to expect</h5>
+                    <ul class="mb-0">
+                        <li>⏱ Takes about 10–15 minutes</li>
+                        <li>📊 Personality & work style based</li>
+                        <li>🔒 Your answers are private</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ✅ IMPORTANT CHANGE -->
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary btn-lg">
+                    Start Test
+                </button>
+
+                <a href="/"
+                   class="btn btn-outline-secondary btn-lg ms-2">
+                    Maybe Later
+                </a>
+            </form>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

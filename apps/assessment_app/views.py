@@ -2,6 +2,7 @@ from django.utils import timezone
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from rest_framework import viewsets, permissions
 from apps.assessment_app.services import (
@@ -42,7 +43,8 @@ class ResponseViewSet(viewsets.ModelViewSet):
 # WEB ASSESSMENT VIEW
 # -----------------------------
 @method_decorator(csrf_protect, name="dispatch")
-class AssessmentQuestionView(View):
+class AssessmentQuestionView(LoginRequiredMixin,View):
+    login_url = "login"
     template_name = "assessment/question.html"
 
     def get(self, request, pk):

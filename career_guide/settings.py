@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'apps.results_app',
     'apps.careers_app',
     'apps.admin_app',
+    'apps.psychometric_app'
 ]
 
 SITE_ID = 1

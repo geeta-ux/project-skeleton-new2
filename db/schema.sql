@@ -88,6 +88,7 @@ CREATE TABLE plans (
     id SERIAL PRIMARY KEY,
     result_id INTEGER REFERENCES results(id) ON DELETE CASCADE,
     plan_json JSONB
+    year INTEGER
 );
 
 -- =====================================================

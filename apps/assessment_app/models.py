@@ -21,7 +21,9 @@ class Response(models.Model):
     assessment = models.ForeignKey(
         'Assessment',
         on_delete=models.CASCADE,
-        related_name='responses'
+        related_name='responses',
+        # null=True,
+        # blank=True
     )
     question = models.ForeignKey('Question', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

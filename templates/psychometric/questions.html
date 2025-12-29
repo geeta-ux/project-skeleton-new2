@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Psychometric Test{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Psychometric Assessment</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    {% for q in questions %}
+        <div class="mb-4">
+            <p class="fw-bold">{{ forloop.counter }}. {{ q.text }}</p>
+
+            {% for value,label in likert_choices %}
+                <div class="form-check">
+                    <input class="form-check-input"
+                           type="radio"
+                           name="q_{{ q.id }}"
+                           value="{{ value }}"
+                           required>
+                    <label class="form-check-label">
+                        {{ label }}
+                    </label>
+                </div>
+            {% endfor %}
+        </div>
+        <hr>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-success">
+        Submit Assessment
+    </button>
+</form>
+{% endblock %}

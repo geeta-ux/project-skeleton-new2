@@ -21,7 +21,6 @@ router.register(r'career-kb', CareerKBViewSet)
 urlpatterns = [ path('', base, name='base'), 
                path('admin/', admin.site.urls), 
                path("accounts/", include("allauth.urls")), 
-               path('auth/', include('apps.users_app.urls')),
 
                path('api/', include(router.urls)), 
                path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), 
@@ -30,5 +29,7 @@ urlpatterns = [ path('', base, name='base'),
                path("assessment/", include("apps.assessment_app.urls")), 
                path('results/', include('apps.results_app.urls', namespace='results_app')), 
                path("careers/", include("apps.careers_app.urls")), # ✅ add this 
+               path('psychometric/', include(('apps.psychometric_app.urls', 'psychometric'),
+                                   namespace='psychometric')),
                ]
 
