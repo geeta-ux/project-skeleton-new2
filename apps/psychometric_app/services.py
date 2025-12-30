@@ -1,31 +1,53 @@
-# apps/psychometric_app/services.py
+from apps.careers_app.models import Career
+from .models import PsychometricResponse
+from apps.psychometric_app import models
+from django.db.models import Avg
 
-from .models import PsychometricSession
+
 
 def calculate_psychometric_profile(user):
-    session = PsychometricSession.objects.filter(
-        user=user,
-        completed_at__isnull=False
-    ).latest('completed_at')
+    from .models import PsychometricResponse
+    from .services import map_profile_to_careers  # ensure import
 
-    responses = session.responses.select_related('question')
 
-    scores = {
-        'personality': 0,
-        'interest': 0,
-        'values': 0
+    responses = PsychometricResponse.objects.filter(session__user=user)
+
+    if not responses.exists():
+        profile = {
+            "personality_level": "-",
+            "interest_type": "-",
+            "value_orientation": "-",
+            "recommended_careers": [],
+        }
+        return profile
+
+    avg = responses.aggregate(avg_score=Avg("score"))["avg_score"]
+
+    if avg <= 2:
+        personality = "Reserved & Reflective"
+    elif avg <= 4:
+        personality = "Balanced & Adaptive"
+    else:
+        personality = "Expressive & Outgoing"
+
+    profile = {
+        "personality_level": personality,
+        "interest_type": "Structured & Analytical",
+        "value_orientation": "Stability & Security",
     }
 
-    for r in responses:
-        if r.question.category in scores:
-            scores[r.question.category] += r.score
+    # Map to careers
+    career_titles = map_profile_to_careers(profile)
+    profile["recommended_careers"] = [
+        {"title": c, "category": c, "description": ""} for c in career_titles
+    ]
 
-    return {
-        'personality_level': map_personality(scores['personality']),
-        'interest_type': map_interest(scores['interest']),
-        'value_orientation': map_values(scores['values']),
-    }
+    return profile
 
+
+# -----------------------
+# SCORE → LABEL MAPPERS
+# -----------------------
 
 def map_personality(score):
     if score < 30:
@@ -49,3 +71,50 @@ def map_values(score):
     elif score < 45:
         return "Growth & Achievement"
     return "Purpose & Impact"
+
+
+# -----------------------
+# CAREER MAPPING
+# -----------------------
+
+def map_profile_to_careers(profile):
+    """
+    Takes psychometric profile and returns a list of recommended careers.
+    """
+
+    personality = profile.get("personality_level", "").lower()
+    interest = profile.get("interest_type", "").lower()
+    values = profile.get("value_orientation", "").lower()
+
+    careers = set()
+
+    # ---- Personality mapping ----
+    if "reserved" in personality or "reflective" in personality:
+        careers.update([
+            "Data Analyst",
+            "Research Assistant",
+            "Software Developer",
+            "Technical Writer"
+        ])
+
+    # ---- Interest mapping ----
+    if "structured" in interest or "analytical" in interest:
+        careers.update([
+            "Accountant",
+            "Statistician",
+            "Quality Analyst",
+            "Business Analyst",
+        ])
+
+    # ---- Values mapping ----
+    if "stability" in values or "security" in values:
+        careers.update([
+            "Bank Officer",
+            "Government Clerk",
+            "Operations Coordinator",
+            "Teacher"
+        ])
+
+    # Return sorted list for display
+    return sorted(list(careers))
+

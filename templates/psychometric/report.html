@@ -54,6 +54,27 @@
             </p>
         </div>
     </div>
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h4>💼 Recommended Careers</h4>
+
+            {% if recommended_careers %}
+            <ul class="mt-3">
+                {% for c in recommended_careers %}
+                <li>
+                    <strong>{{ c.title }}</strong>
+                    <span class="text-muted"> — {{ c.category }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-muted mt-2">
+                No mapped careers yet — complete more questions.
+            </p>
+            {% endif %}
+        </div>
+    </div>
+
 
     <!-- Summary -->
     <div class="alert alert-info mt-4 text-center">
