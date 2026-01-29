@@ -1,0 +1,32 @@
+{% extends 'learning/base.html' %}
+
+{% block title %}Learning Hub - Psychometric App{% endblock %}
+
+{% block content %}
+<a href="{% url 'base' %}" class="back-link">← Back to Main Website</a>
+
+<div class="hero-section">
+    <h1>Psychometric Learning Hub</h1>
+    <p>Master the skills needed for success. Explore our comprehensive guides below.</p>
+</div>
+
+<div class="cards-grid">
+    <a href="{% url 'psychometric:verbal' %}" class="card">
+        <h2>Verbal Reasoning</h2>
+        <p>Understand how to analyze written information, evaluate arguments, and draw conclusions.</p>
+        <span class="btn-link">Learn More</span>
+    </a>
+
+    <a href="{% url 'psychometric:personality' %}" class="card">
+        <h2>Personality Tests</h2>
+        <p>Discover how your traits and preferences align with different career paths and roles.</p>
+        <span class="btn-link">Learn More</span>
+    </a>
+
+    <a href="{% url 'psychometric:sjt' %}" class="card">
+        <h2>Situational Judgment</h2>
+        <p>Learn to navigate workplace scenarios and demonstrate effective decision-making.</p>
+        <span class="btn-link">Learn More</span>
+    </a>
+</div>
+{% endblock %}
