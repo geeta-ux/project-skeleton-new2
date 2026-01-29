@@ -1,0 +1,29 @@
+{% extends 'learning/base.html' %}
+
+{% block title %}Situational Judgment - Psychometric Hub{% endblock %}
+
+{% block content %}
+<a href="{% url 'psychometric:hub' %}" class="back-link">Back to Hub</a>
+
+<div class="hero-section">
+    <h1>Situational Judgment Tests (SJT)</h1>
+    <p>Demonstrate your decision-making skills in realistic workplace scenarios.</p>
+</div>
+
+<!-- Content Removed as per User Request -->
+
+<div class="cta-section">
+    <h2>Wrap Up</h2>
+    <p>You've explored the core psychometric test types. Ready to review?</p>
+    <a href="{% url 'psychometric:hub' %}" class="cta-button">Back to Hub</a>
+</div>
+<div class="generator-section">
+    <h2>Practice with AI</h2>
+    <p>Get a random workplace scenario to test your judgment.</p>
+    <button class="cta-button" onclick="generateQuestion('sjt')">Generate Scenario</button>
+    <div id="question-container"></div>
+</div>
+
+<script>window.currentTopic = 'sjt';</script>
+
+{% endblock %}

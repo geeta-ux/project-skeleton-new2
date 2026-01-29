@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Psychometric Hub{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'learning/style.css' %}">
+    <script src="{% static 'learning/ai.js' %}?v=5" defer></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="main-header">
+            <div class="logo">PsychoMetric</div>
+            <nav>
+                <a href="{% url 'base' %}">Main Site</a>
+                <a href="{% url 'psychometric:hub' %}">Hub Home</a>
+                <a href="{% url 'admin:index' %}">Admin</a>
+            </nav>
+        </header>
+
+        <main class="content-wrapper">
+            {% block content %}
+            {% endblock %}
+        </main>
+
+        <footer class="main-footer">
+            <p>&copy; 2026 Psychometric Learning. All rights reserved.</p>
+        </footer>
+
+        <!-- AI Chat Widget -->
+        <div class="chat-section">
+            <div class="chat-header" onclick="this.nextElementSibling.classList.toggle('hidden')">
+                AI Tutor (Click to toggle)
+            </div>
+            <div class="chat-body hidden" id="chat-box">
+                <div class="chat-message ai">Hello! I'm your AI tutor. Ask me anything about psychometric tests.</div>
+            </div>
+            <div class="chat-input-area">
+                <!-- Using a global variable 'currentTopic' that specific pages can set -->
+                <input type="text" id="chat-input" placeholder="Type a message..."
+                    onkeypress="if(event.key==='Enter') sendMessage(window.currentTopic || 'general')">
+                <button onclick="sendMessage(window.currentTopic || 'general')">Send</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

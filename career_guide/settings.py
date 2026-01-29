@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'apps.results_app',
     'apps.careers_app',
     'apps.admin_app',
-    'apps.psychometric_app'
+    'apps.psychometric_app.learning'
 ]
 
 SITE_ID = 1
@@ -145,6 +145,10 @@ GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 
 if not GOOGLE_CLIENT_ID or not GOOGLE_CLIENT_SECRET:
     print("[WARNING] Google OAuth credentials NOT loaded!")
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    print("[WARNING] GEMINI_API_KEY NOT found in environment! AI features will use fallback data.")
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
