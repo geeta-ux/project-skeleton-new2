@@ -33,9 +33,9 @@ function getCSRFToken() {
  * API ENDPOINTS (MATCH urls.py)
  *********************************/
 const API = {
-    chat: '/api/chat/',
-    generate: '/api/generate-question/',
-    career: '/api/career-advice/',
+    chat: '/psychometric/chat/',
+    generate: '/psychometric/generate-question/',
+    career: '/psychometric/career-advice/',
 };
 
 /*********************************
@@ -137,11 +137,11 @@ async function generateQuestion(topic = getCurrentTopic()) {
 
             html += `
                     </div>
-                    <div class="actions">
+                    <div class="actions" style="margin-top: 15px;">
                         <button class="ask-ai-btn"
                             onclick="askTutor('${escapeForJS(
-                                'Help me understand this question: ' + q.text
-                            )}')">
+                'Help me understand this question: ' + q.text
+            )}')">
                             Ask Tutor ✨
                         </button>
                     </div>
@@ -151,8 +151,9 @@ async function generateQuestion(topic = getCurrentTopic()) {
         });
 
         html += `
-            <div class="analyze-section" style="text-align:center; margin-top:30px;">
-                <button class="analyze-btn" onclick="submitAnalysis('${topic}')">
+            <div class="analyze-section" style="text-align:center; margin-top:50px; margin-bottom:50px;">
+                <button class="analyze-btn" onclick="submitAnalysis('${topic}')" 
+                    style="font-size: 1.2rem; padding: 15px 30px; font-weight: 700;">
                     Analyze Career Path 🚀
                 </button>
                 <div id="career-results" class="hidden"></div>

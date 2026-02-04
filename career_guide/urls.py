@@ -31,7 +31,7 @@ urlpatterns = [ path('', base, name='base'),
                path("careers/", include("apps.careers_app.urls")), # ✅ add this 
                path('psychometric/', include(('apps.psychometric_app.learning.urls', 'psychometric'),namespace='psychometric')),
                
-               # Psychometric AI Endpoints (Standardized /api/ path)
+               # Compatibility layer for cached JS calling /api/
                path('api/', include('apps.psychometric_app.learning.urls')),
                ]
 

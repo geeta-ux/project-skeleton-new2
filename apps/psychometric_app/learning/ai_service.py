@@ -87,18 +87,19 @@ class AIContext:
 class AIService:
     @staticmethod
     def get_career_advice(topic, user_data):
+        api_key = getattr(settings, 'GEMINI_API_KEY', None)
+        if not api_key or api_key == 'your_gemini_api_key_here':
+            print("DEBUG: Using fallback for career advice (missing/placeholder key)")
+            return AIService.get_fallback_career_advice()
+
         try:
+            genai.configure(api_key=api_key)
             model = genai.GenerativeModel('gemini-flash-latest')
             
-            # Ensure we don't pass too much empty data
             valid_data = [x for x in user_data if x]
-            
             prompt = AIContext.CAREER_CONTEXT.format(topic=topic, data=json.dumps(valid_data))
             
             response = model.generate_content(prompt)
-            print(f"DEBUG: Gemini Response: {response.text}")
-            
-            # Use regex or strip more carefully to get JSON
             content = response.text.strip()
             if '```json' in content:
                 content = content.split('```json')[1].split('```')[0].strip()
@@ -106,15 +107,16 @@ class AIService:
                 content = content.split('```')[1].split('```')[0].strip()
             
             data = json.loads(content)
-            
             results = data.get('careers', [])
             if results and isinstance(results, list): 
                 return results
-                
         except Exception as e:
-            print(f"Career Advice Error: {e}")
-            
-        # Fallback if AI fails or returns empty
+            print(f"Career Advice GPT Error: {e}")
+        
+        return AIService.get_fallback_career_advice()
+
+    @staticmethod
+    def get_fallback_career_advice():
         return [
             {"role": "Project Manager", "reason": "Requires strong organizational and interpersonal skills (Fallback Suggestion).", "industry": "Management"},
             {"role": "Data Analyst", "reason": "Suits analytical thinking and attention to detail (Fallback Suggestion).", "industry": "Tech"},
@@ -123,12 +125,14 @@ class AIService:
 
     @staticmethod
     def get_chat_response(topic_slug, user_message):
+        api_key = getattr(settings, 'GEMINI_API_KEY', None)
+        if not api_key or api_key == 'your_gemini_api_key_here':
+            return "Skill issue: I'm currently in 'Static Mode' because no API key is set. I can help with general guidance but can't think dynamically yet!"
+
         try:
+            genai.configure(api_key=api_key)
             model = genai.GenerativeModel('gemini-flash-latest')
-            
-            # Contextualize the chat
             system_instruction = f"You are an AI Tutor for {topic_slug} psychometric tests. Keep answers helpful, concise, and related to the topic."
-            
             prompt = f"{system_instruction}\nUser: {user_message}\nTutor:"
             
             response = model.generate_content(prompt)
@@ -138,11 +142,13 @@ class AIService:
 
     @staticmethod
     def generate_question(topic_slug):
-        try:
-            api_key = os.getenv("GEMINI_API_KEY")
-            if not api_key:
-                raise ValueError("GEMINI_API_KEY not found in environment")
+        api_key = getattr(settings, 'GEMINI_API_KEY', None)
+        if not api_key or api_key == 'your_gemini_api_key_here':
+            print("DEBUG: Using fallback due to missing/placeholder API key")
+            return AIService.get_fallback_questions(topic_slug)
 
+        try:
+            genai.configure(api_key=api_key)
             model = genai.GenerativeModel('gemini-flash-latest')
             
             if topic_slug == 'verbal':
@@ -177,6 +183,7 @@ class AIService:
     @staticmethod
     def get_fallback_questions(topic_slug):
         """Returns a list of 10 static questions based on the topic."""
+        print(f"DEBUG: get_fallback_questions called with topic_slug: '{topic_slug}'")
         if topic_slug == 'verbal':
             return [
                 {"type": "synonym", "text": "Synonym for 'Resilient'?", "options": ["Weak", "Strong", "Brittle", "Malleable"], "correct_index": 1, "explanation": "Resilient means able to withstand or recover quickly from difficult conditions.", "weight": 5},

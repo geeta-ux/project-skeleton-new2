@@ -1,0 +1,240 @@
+{% extends "learning/base.html" %}
+{% block title %}Screening Results{% endblock %}
+
+{% block content %}
+<div class="result-container">
+    <div class="result-card animate-scale-in">
+        <div class="status-icon">
+            {% if session.risk_level == 'low' %}
+            <div class="icon low">✓</div>
+            {% elif session.risk_level == 'medium' %}
+            <div class="icon medium">!</div>
+            {% else %}
+            <div class="icon high">⚠</div>
+            {% endif %}
+        </div>
+
+        <header class="result-header">
+            <h2>Screening Complete</h2>
+            <p class="summary-text">{{ session.recommendation }}</p>
+        </header>
+
+        {% if session.risk_level == 'high' %}
+        <div class="alert-box high">
+            <h3>Recommendation</h3>
+            <p>Based on your profile, we suggest pausing psychometric testing for now. A professional consultation can
+                provide more personalized insights and support.</p>
+            <div class="action-links">
+                <a href="https://www.google.com/search?q=mental+health+support+near+me" target="_blank"
+                    class="secondary-btn">Find Support</a>
+                <a href="{% url 'base' %}" class="link-btn">Return to Main Site</a>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert-box {% if session.risk_level == 'medium' %}medium{% else %}low{% endif %}">
+            <h3>Suggested Path</h3>
+            <p>
+                {% if route_to == 'verbal' %}
+                Based on your cognitive clarity, we recommend starting with <strong>Verbal Reasoning</strong>.
+                {% elif route_to == 'personality' %}
+                Based on your emotional profile, we recommend exploring <strong>Personality Tests</strong>.
+                {% elif route_to == 'sjt' %}
+                Based on your stress management profile, we recommend starting with <strong>Situational Judgment
+                    Tests</strong>.
+                {% else %}
+                You are ready to explore any test in the Hub.
+                {% endif %}
+            </p>
+            <div class="action-links">
+                {% if route_to == 'verbal' %}
+                <a href="{% url 'psychometric:verbal' %}" class="primary-btn">Start Verbal Reasoning</a>
+                {% elif route_to == 'personality' %}
+                <a href="{% url 'psychometric:personality' %}" class="primary-btn">Start Personality Test</a>
+                {% elif route_to == 'sjt' %}
+                <a href="{% url 'psychometric:sjt' %}" class="primary-btn">Start SJT</a>
+                {% else %}
+                <a href="{% url 'psychometric:hub' %}" class="primary-btn">Go to Hub</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="result-footer">
+            <p class="final-disclaimer">This screening is for informational purposes and does not constitute medical
+                advice.</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .result-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 60px 20px;
+        background: #f8fafc;
+        min-height: 70vh;
+    }
+
+    .result-card {
+        background: white;
+        border-radius: 32px;
+        box-shadow: 0 40px 100px rgba(0, 0, 0, 0.08);
+        max-width: 600px;
+        width: 100%;
+        padding: 60px 40px;
+        text-align: center;
+        position: relative;
+    }
+
+    .status-icon {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 30px;
+    }
+
+    .icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        font-weight: bold;
+    }
+
+    .icon.low {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .icon.medium {
+        background: #fef9c3;
+        color: #a16207;
+    }
+
+    .icon.high {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+    .result-header h2 {
+        font-size: 2rem;
+        color: #1e293b;
+        margin-bottom: 16px;
+        font-weight: 700;
+    }
+
+    .summary-text {
+        font-size: 1.125rem;
+        color: #64748b;
+        line-height: 1.6;
+        margin-bottom: 40px;
+    }
+
+    .alert-box {
+        padding: 24px;
+        border-radius: 16px;
+        margin-bottom: 30px;
+        text-align: left;
+    }
+
+    .alert-box h3 {
+        margin-top: 0;
+        margin-bottom: 12px;
+        font-size: 1.1rem;
+    }
+
+    .alert-box.low {
+        background: #f0fdf4;
+        color: #166534;
+        border-left: 5px solid #22c55e;
+    }
+
+    .alert-box.medium {
+        background: #fffbeb;
+        color: #92400e;
+        border-left: 5px solid #f59e0b;
+    }
+
+    .alert-box.high {
+        background: #fef2f2;
+        color: #991b1b;
+        border-left: 5px solid #ef4444;
+    }
+
+    .action-links {
+        display: flex;
+        gap: 16px;
+        margin-top: 24px;
+        justify-content: center;
+    }
+
+    .primary-btn {
+        background: #2563eb;
+        color: white;
+        text-decoration: none;
+        padding: 14px 32px;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .primary-btn:hover {
+        background: #1d4ed8;
+        transform: translateY(-2px);
+    }
+
+    .secondary-btn {
+        background: #f1f5f9;
+        color: #1e293b;
+        text-decoration: none;
+        padding: 14px 32px;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .secondary-btn:hover {
+        background: #e2e8f0;
+    }
+
+    .link-btn {
+        color: #64748b;
+        text-decoration: none;
+        padding: 14px 20px;
+        font-weight: 500;
+    }
+
+    .link-btn:hover {
+        color: #1e293b;
+    }
+
+    .result-footer {
+        border-top: 1px solid #f1f5f9;
+        padding-top: 24px;
+    }
+
+    .final-disclaimer {
+        font-size: 0.85rem;
+        color: #94a3b8;
+    }
+
+    @keyframes scaleIn {
+        from {
+            transform: scale(0.9);
+            opacity: 0;
+        }
+
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .animate-scale-in {
+        animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+</style>
+{% endblock %}

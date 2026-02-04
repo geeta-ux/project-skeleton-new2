@@ -11,22 +11,47 @@
 </div>
 
 <div class="cards-grid">
-    <a href="{% url 'psychometric:verbal' %}" class="card">
+    <a href="{% url 'psychometric:verbal' %}" class="card {% if highlighted_test == 'verbal' %}highlighted{% endif %}">
+        {% if highlighted_test == 'verbal' %}<span class="badge">Recommended</span>{% endif %}
         <h2>Verbal Reasoning</h2>
         <p>Understand how to analyze written information, evaluate arguments, and draw conclusions.</p>
         <span class="btn-link">Learn More</span>
     </a>
 
-    <a href="{% url 'psychometric:personality' %}" class="card">
+    <a href="{% url 'psychometric:personality' %}"
+        class="card {% if highlighted_test == 'personality' %}highlighted{% endif %}">
+        {% if highlighted_test == 'personality' %}<span class="badge">Recommended</span>{% endif %}
         <h2>Personality Tests</h2>
         <p>Discover how your traits and preferences align with different career paths and roles.</p>
         <span class="btn-link">Learn More</span>
     </a>
 
-    <a href="{% url 'psychometric:sjt' %}" class="card">
+    <a href="{% url 'psychometric:sjt' %}" class="card {% if highlighted_test == 'sjt' %}highlighted{% endif %}">
+        {% if highlighted_test == 'sjt' %}<span class="badge">Recommended</span>{% endif %}
         <h2>Situational Judgment</h2>
         <p>Learn to navigate workplace scenarios and demonstrate effective decision-making.</p>
         <span class="btn-link">Learn More</span>
     </a>
 </div>
+
+<style>
+    .highlighted {
+        border: 3px solid #3b82f6 !important;
+        background: #eff6ff !important;
+        transform: scale(1.05);
+        box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2) !important;
+    }
+
+    .badge {
+        background: #3b82f6;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        position: absolute;
+        top: -12px;
+        right: 12px;
+    }
+</style>
 {% endblock %}

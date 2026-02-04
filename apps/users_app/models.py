@@ -29,6 +29,7 @@ class User(AbstractUser):
     name = models.CharField(max_length=150, blank=True)
     email = models.EmailField(unique=True)
     is_admin = models.BooleanField(default=False)
+    has_psychometric_access = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = "email"

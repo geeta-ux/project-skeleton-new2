@@ -6,13 +6,13 @@ from .models import User   # THIS WORKS because models.py exists in this app
 class UserAdmin(DjangoUserAdmin):
     model = User
 
-    list_display = ("email", "name", "is_staff", "is_superuser", "is_admin")
+    list_display = ("email", "name", "is_staff", "is_superuser", "is_admin", "has_psychometric_access")
     ordering = ("email",)
 
     fieldsets = (
         (None, {"fields": ("email", "password")}),
         ("Personal info", {"fields": ("name",)}),
-        ("Permissions", {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions")}),
+        ("Permissions", {"fields": ("is_active", "is_staff", "is_superuser", "has_psychometric_access", "groups", "user_permissions")}),
         ("Important dates", {"fields": ("last_login", "date_joined")}),
     )
 
@@ -24,3 +24,14 @@ class UserAdmin(DjangoUserAdmin):
     )
 
     search_fields = ("email", "name")
+    actions = ["provide_psychometric_access", "revoke_psychometric_access"]
+
+    @admin.action(description="Provide Psychometric Access")
+    def provide_psychometric_access(self, request, queryset):
+        queryset.update(has_psychometric_access=True)
+        self.message_user(request, "Access granted to selected users.")
+
+    @admin.action(description="Revoke Psychometric Access")
+    def revoke_psychometric_access(self, request, queryset):
+        queryset.update(has_psychometric_access=False)
+        self.message_user(request, "Access revoked from selected users.")
