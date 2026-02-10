@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="screening-container">
-    <div class="screening-card animate-fade-in">
+    <div class="screening-card">
         <header class="screening-header">
             <h1>Psychological Readiness Screening</h1>
             <div class="disclaimer-highlight">
@@ -42,9 +42,8 @@
                 {% endfor %}
             </div>
 
-            <div class="screening-footer">
-                <p class="soft-disclaimer">By submitting, you acknowledge that this is for screening & routing purposes
-                    only.</p>
+            <div class="screening-footer text-center mt-4">
+                <p class="soft-disclaimer">By submitting, you acknowledge that this is for screening & routing purposes only.</p>
                 <button type="submit" class="submit-btn">Complete Screening</button>
             </div>
         </form>
@@ -52,176 +51,100 @@
 </div>
 
 <style>
-    .screening-container {
-        display: flex;
-        justify-content: center;
-        padding: 40px 20px;
-        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-        min-height: 80vh;
-    }
+/* Container and card */
+.screening-container {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    min-height: 80vh;
+}
 
-    .screening-card {
-        background: white;
-        border-radius: 24px;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
-        max-width: 800px;
-        width: 100%;
-        padding: 40px;
-    }
+.screening-card {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+    max-width: 800px;
+    width: 100%;
+    padding: 40px;
+}
 
-    .screening-header h1 {
-        font-size: 2.5rem;
-        color: #1e293b;
-        margin-bottom: 20px;
-        font-weight: 700;
-        letter-spacing: -0.025em;
-    }
+/* Questions */
+.questions-wrapper { margin-bottom: 40px; }
 
-    .disclaimer-highlight {
-        background: #fffbeb;
-        border-left: 4px solid #f59e0b;
-        padding: 16px;
-        border-radius: 8px;
-        margin-bottom: 40px;
-        font-size: 0.95rem;
-        color: #92400e;
-    }
+.question-item { margin-bottom: 48px; }
 
-    .questions-wrapper {
-        margin-bottom: 40px;
-    }
+.question-number {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-bottom: 8px;
+}
 
-    .question-item {
-        margin-bottom: 48px;
-        opacity: 0;
-        transform: translateY(20px);
-        animation: fadeInUp 0.6s forwards;
-    }
+.question-text {
+    font-size: 1.25rem;
+    color: #334155;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
 
-    .question-number {
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        color: #94a3b8;
-        margin-bottom: 8px;
-    }
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
 
-    .question-text {
-        font-size: 1.25rem;
-        color: #334155;
-        margin-bottom: 20px;
-        line-height: 1.5;
-        font-weight: 500;
-    }
+.option-card {
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
 
-    .options-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-    }
+.option-card:hover {
+    border-color: #3b82f6;
+    background: #eff6ff;
+}
 
-    .option-card {
-        border: 2px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 16px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-    }
+.option-card input {
+    margin-right: 12px;
+    transform: scale(1.2);
+}
 
-    .option-card:hover {
-        border-color: #3b82f6;
-        background: #eff6ff;
-    }
+.option-card input:checked + .option-label {
+    color: #2563eb;
+    font-weight: 600;
+}
 
-    .option-card input {
-        margin-right: 12px;
-        transform: scale(1.2);
-    }
+.option-label { font-size: 1rem; color: #475569; }
 
-    .option-card input:checked+.option-label {
-        color: #2563eb;
-        font-weight: 600;
-    }
+/* Footer */
+.screening-footer { border-top: 1px solid #e2e8f0; padding-top: 32px; }
 
-    .option-card:has(input:checked) {
-        border-color: #3b82f6;
-        background: #eff6ff;
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
-    }
+.soft-disclaimer { font-size: 0.85rem; color: #94a3b8; margin-bottom: 24px; }
 
-    .option-label {
-        font-size: 1rem;
-        color: #475569;
-    }
+.submit-btn {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 16px 48px;
+    border-radius: 12px;
+    font-size: 1.125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+}
 
-    .screening-footer {
-        text-align: center;
-        border-top: 1px solid #e2e8f0;
-        padding-top: 32px;
-    }
+.submit-btn:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.4);
+}
 
-    .soft-disclaimer {
-        font-size: 0.85rem;
-        color: #94a3b8;
-        margin-bottom: 24px;
-    }
-
-    .submit-btn {
-        background: #2563eb;
-        color: white;
-        border: none;
-        padding: 16px 48px;
-        border-radius: 12px;
-        font-size: 1.125rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
-    }
-
-    .submit-btn:hover {
-        background: #1d4ed8;
-        transform: translateY(-2px);
-        box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.4);
-    }
-
-    @keyframes fadeInUp {
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Animation Staggering */
-        {
-        % for q in questions %
-    }
-
-    .question-item:nth-child({
-            {
-            forloop.counter
-        }
-
-    }) {
-        animation-delay: {
-                {
-                forloop.counter0|add: 0.1
-            }
-        }
-
-        s;
-    }
-
-        {
-        % endfor %
-    }
-
-    @media (max-width: 640px) {
-        .options-grid {
-            grid-template-columns: 1fr;
-        }
-    }
+/* Responsive */
+@media (max-width: 640px) { .options-grid { grid-template-columns: 1fr; } }
 </style>
 {% endblock %}

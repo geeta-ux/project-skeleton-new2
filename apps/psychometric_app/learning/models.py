@@ -59,6 +59,7 @@ class ScreeningQuestion(models.Model):
     choice_b = models.CharField(max_length=200, default='Several days')
     choice_c = models.CharField(max_length=200, default='More than half the days')
     choice_d = models.CharField(max_length=200, default='Nearly every day')
+    is_active = models.BooleanField(default=True)   # << add this
 
     class Meta:
         ordering = ['order']

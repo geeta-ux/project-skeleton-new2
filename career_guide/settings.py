@@ -138,7 +138,7 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ----------------------------
-# Google OAuth
+# Google OAuth (DB-backed)
 # ----------------------------
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
@@ -146,18 +146,26 @@ GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 if not GOOGLE_CLIENT_ID or not GOOGLE_CLIENT_SECRET:
     print("[WARNING] Google OAuth credentials NOT loaded!")
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-if not GEMINI_API_KEY:
-    print("[WARNING] GEMINI_API_KEY NOT found in environment! AI features will use fallback data.")
-
 SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'APP': {
-            'client_id': GOOGLE_CLIENT_ID,
-            'secret': GOOGLE_CLIENT_SECRET,
-            'key': ""
-        },
+    "google": {
+        # Only include scopes and auth params — no 'APP' key
         "SCOPE": ["profile", "email"],
         "AUTH_PARAMS": {"access_type": "online"},
     }
 }
+
+GEMINI_API_KEY = os.getenv("GOOGLE_API_KEY")
+if not GEMINI_API_KEY:
+    print("[WARNING] GEMINI_API_KEY NOT found in environment! AI features will use fallback data.")
+
+# SOCIALACCOUNT_PROVIDERS = {
+#     'google': {
+#         'APP': {
+#             'client_id': GOOGLE_CLIENT_ID,
+#             'secret': GOOGLE_CLIENT_SECRET,
+#             'key': ""
+#         },
+#         "SCOPE": ["profile", "email"],
+#         "AUTH_PARAMS": {"access_type": "online"},
+#     }
+# }

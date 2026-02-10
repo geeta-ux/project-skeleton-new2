@@ -124,4 +124,5 @@ class Command(BaseCommand):
                 q.choice_b = choices[1]
                 q.choice_c = choices[2]
                 q.choice_d = choices[3]
+                q.is_active = True    # <-- Add this
                 q.save()

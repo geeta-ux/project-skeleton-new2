@@ -322,6 +322,7 @@ def score_assessment(assessment: Assessment) -> dict:
 
     Result.objects.update_or_create(
         user=assessment.user,
+        assessment=assessment,
         defaults={
             "score_breakdown": score_breakdown,
             "primary_track": primary_track,
