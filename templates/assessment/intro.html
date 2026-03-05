@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Career Assessment - Intro{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-body text-center p-5">
+                <h2 class="mb-4">AI-Powered Career Assessment</h2>
+                <p class="lead mb-4">
+                    Get personalized career guidance based on your profile and aptitude.
+                    Our AI will generate questions tailored to you.
+                </p>
+
+                {% if missing_fields %}
+                <div class="alert alert-warning">
+                    <p>Please update your profile to continue. Missing: {{ missing_fields|join:", " }}</p>
+                    <a href="#" class="btn btn-warning">Update Profile</a>
+                </div>
+                {% else %}
+                <p class="text-muted mb-4">
+                    This test evaluates: Logical Reasoning, Numerical Reasoning, Verbal Reasoning,
+                    Creative Thinking, and Empathy.
+                </p>
+
+                <form action="{% url 'assessment_app:generate' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        Start Assessment
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

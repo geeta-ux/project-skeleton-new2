@@ -1,10 +1,10 @@
 from django.db import models
-from django.conf import settings
-from apps.assessment_app.models import Assessment
+from apps.users_app.models import User
+from apps.assessment_app.models import CareerAssessment
 
 class Result(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='results')
-    assessment = models.ForeignKey(Assessment, on_delete=models.CASCADE, related_name='results')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='results')
+    assessment = models.OneToOneField(CareerAssessment, on_delete=models.CASCADE, null=True, blank=True, related_name='result')
     scores = models.JSONField(blank=True, null=True)
     primary_track = models.CharField(max_length=100, blank=True, null=True)
     secondary_track = models.CharField(max_length=100, blank=True, null=True)

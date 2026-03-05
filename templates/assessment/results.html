@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+{% load static %}
+{% load assessment_extras %}
+
+{% block title %}Your Career Profile{% endblock %}
+
+{% block head %}
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap"
+    rel="stylesheet">
+<style>
+    body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .score-badge {
+        font-size: 1.25rem;
+        font-weight: 800;
+    }
+
+    .track-title {
+        font-weight: 800;
+        letter-spacing: -0.02em;
+    }
+
+    .card-accent {
+        border-top: 5px solid var(--primary);
+    }
+
+    .skill-gap-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+    }
+
+    .skill-gap-table th {
+        background-color: #f8f9fa;
+        color: #333;
+        font-weight: 700;
+        text-align: left;
+        padding: 12px;
+        border: 1px solid #dee2e6;
+    }
+
+    .skill-gap-table td {
+        padding: 12px;
+        border: 1px solid #dee2e6;
+        color: #555;
+    }
+
+    .skill-gap-table tr:nth-child(even) {
+        background-color: #fdfdfd;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container animate-fade-in">
+    <div class="text-center mb-5">
+        <h6 class="text-primary text-uppercase fw-bold mb-2">Analysis Complete</h6>
+        <h1 class="track-title display-5">Your Career Potential Profile</h1>
+        <p class="text-muted lead">Discover where your unique strengths align with future paths.</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Main Stats -->
+        <div class="col-lg-8">
+            <div class="card glass-card border-0 mb-4 p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-7">
+                        <h4 class="fw-bold mb-3">Aptitude Insights</h4>
+                        <p class="text-muted">This chart visualizes your cognitive and emotional strengths across five
+                            key domains.</p>
+                        <div style="height: 350px;">
+                            <canvas id="aptitudeChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="choice-container mt-4 mt-md-0">
+                            {% for item in score_details %}
+                            <div class="choice-label d-flex justify-content-between align-items-center py-3">
+                                <span>{{ item.label }}</span>
+                                <span class="score-badge text-primary">{{ item.score }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card glass-card border-0 mb-4 p-4 card-accent">
+                <h4 class="fw-bold mb-3">Skill Gap Analysis:</h4>
+                <div class="table-responsive">
+                    <table class="skill-gap-table">
+                        <thead>
+                            <tr>
+                                <th>Skill</th>
+                                <th>Gap</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in insights.skill_gap %}
+                            <tr>
+                                <td>{{ item.skill }}</td>
+                                <td>{{ item.gap }}</td>
+                                <td>{{ item.action }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center py-4">
+                                    <div class="mb-2"><i class="bi bi-star-fill text-warning fs-3"></i></div>
+                                    <h5 class="fw-bold">Outstanding Performance!</h5>
+                                    <p class="text-muted mb-0">You've met or exceeded all benchmarks for this track.
+                                        Focus on mastery and leadership.</p>
+                                </td>
+                            </tr>
+
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Recommended Careers -->
+            <div class="card glass-card border-0 mb-4 p-4">
+                <h4 class="fw-bold mb-4">Top Career Recommendations</h4>
+                <div class="row g-4">
+                    {% for career in insights.careers %}
+                    <div class="col-md-4">
+                        <div class="h-100 p-4 border rounded-4 bg-white hover-shadow transition">
+                            <span class="badge bg-primary-subtle text-primary mb-2">{{ career.match_score }}
+                                Match</span>
+                            <h5 class="fw-bold">{{ career.role }}</h5>
+                            <p class="small text-muted mb-0">{{ career.description }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar / Summary -->
+        <div class="col-lg-4">
+            <div
+                class="card glass-card bg-primary text-white border-0 mb-4 p-4 shadow-lg overflow-hidden position-relative">
+                <div class="position-relative z-1">
+                    <h5 class="opacity-75 mb-1">Total Score</h5>
+                    <h2 class="display-4 fw-800 mb-4">{{ total_score }}</h2>
+                    <hr class="opacity-25">
+                    <!-- DEV_MARKER_V3 -->
+                    <p class="mb-3">Excellent work! You show strong potential in <strong>{{ primary_track }}</strong>
+                        related fields.</p>
+                    <a href="{% url 'assessment_app:download_plan' assessment.pk %}"
+                        class="btn btn-light w-100 rounded-pill fw-bold py-2 shadow-sm">
+                        <i class="bi bi-file-earmark-pdf me-2"></i>Download Full Plan
+                    </a>
+                </div>
+                <div class="position-absolute bottom-0 end-0 opacity-10"
+                    style="font-size: 10rem; transform: translate(20%, 20%)">
+                    <i class="bi bi-graph-up"></i>
+                </div>
+            </div>
+
+            <!-- 5-Year Roadmap -->
+            <div class="card glass-card border-0 p-4 mb-4">
+                <h5 class="fw-bold mb-4">5-Year Development Plan</h5>
+                <div class="roadmap-timeline">
+                    {% for plan in insights.roadmap %}
+                    <div class="mb-3 ps-3 border-start border-2 border-primary-subtle position-relative">
+                        <span class="small fw-bold text-primary">Year {{ plan.year }}: {{ plan.focus }}</span>
+                        <ul class="small mb-0 ps-3 mt-1 text-muted">
+                            {% for action in plan.actions %}
+                            <li>{{ action }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const ctx = document.getElementById('aptitudeChart').getContext('2d');
+
+        const labels = ["Logical", "Numerical", "Verbal", "Creative", "Empathy"];
+        const dataValues = JSON.parse('{{ chart_data|safe }}');
+
+        new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Score Profile',
+                    data: dataValues,
+                    backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                    borderColor: 'rgba(99, 102, 241, 1)',
+                    borderWidth: 3,
+                    pointBackgroundColor: 'rgba(99, 102, 241, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(99, 102, 241, 1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { display: true },
+                        suggestedMin: 0,
+                        suggestedMax: 10,
+                        ticks: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,16 +1,18 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import QuestionViewSet, AssessmentViewSet, ResponseViewSet
-from .views import AssessmentStartView, AssessmentQuestionView
+from django.urls import path
+from .views import (
+    AssessmentIntroView, 
+    AssessmentGeneratorView, 
+    AssessmentTakeView, 
+    AssessmentResultView,
+    DownloadPlanPDFView
+)
 
 app_name = "assessment_app"
 
-router = DefaultRouter()
-router.register(r"questions", QuestionViewSet)
-router.register(r"assessments", AssessmentViewSet)
-router.register(r"responses", ResponseViewSet)
-
 urlpatterns = [
-    path("start/", AssessmentStartView.as_view(), name="start"),  # web page
-    path("take/question/<int:pk>/", AssessmentQuestionView.as_view(), name="question"),
+    path('start/', AssessmentIntroView.as_view(), name='start'),
+    path('generate/', AssessmentGeneratorView.as_view(), name='generate'),
+    path('take/<int:pk>/', AssessmentTakeView.as_view(), name='take_test'),
+    path('results/<int:pk>/', AssessmentResultView.as_view(), name='results'),
+    path('results/<int:pk>/download/', DownloadPlanPDFView.as_view(), name='download_plan'),
 ]

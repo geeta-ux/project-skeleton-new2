@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load socialaccount %}
+
+{% block title %}{% trans "Sign In" %} - Career Guide Platform{% endblock %}
+
+{% block head %}
+<style>
+    .auth-card {
+        border: none;
+        border-radius: 1.25rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+    .auth-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .auth-header {
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+        padding: 2.5rem 2rem;
+        color: white;
+        text-align: center;
+    }
+
+    .auth-body {
+        padding: 2.5rem 3rem;
+        background-color: #ffffff;
+    }
+
+    .btn-confirm {
+        border-radius: 0.75rem;
+        padding: 0.8rem 2rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-confirm:hover {
+        box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+    }
+
+    .provider-icon {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="auth-card">
+            <div class="auth-header">
+                {% if process == "connect" %}
+                <h2 class="fw-bold mb-2">Connect {{ provider.name }}</h2>
+                <p class="mb-0 opacity-75">You are about to connect a new third party account from {{ provider.name }}.
+                </p>
+                {% else %}
+                <h2 class="fw-bold mb-2">Sign In Via {{ provider.name }}</h2>
+                <p class="mb-0 opacity-75">You are about to sign in using a third party account from {{ provider.name
+                    }}.</p>
+                {% endif %}
+            </div>
+            <div class="auth-body text-center">
+                <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" alt="Google Logo"
+                    class="provider-icon">
+
+                <form method="post">
+                    {% csrf_token %}
+                    {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                    {% endif %}
+                    <div class="d-grid mt-3">
+                        <button type="submit" class="btn btn-primary btn-confirm shadow-sm">
+                            {% trans "Continue" %}
+                        </button>
+                    </div>
+                </form>
+
+                <p class="text-muted mt-4 mb-0">
+                    <small>By continuing, you agree to our terms and conditions.</small>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

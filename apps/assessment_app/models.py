@@ -1,36 +1,30 @@
 from django.db import models
-from apps.users_app.models import User
+from django.conf import settings
 
-class Question(models.Model):
-    section = models.CharField(max_length=100)
-    text = models.TextField()
-    options = models.JSONField()
-    correct_answer = models.CharField(max_length=255, blank=True, null=True)
-    weight = models.FloatField(default=1.0)
-    class Meta:
-        db_table = 'questions'
+# Since we are generating questions dynamically, we store the *result* 
+# which contains the questions generated for that specific session.
 
-class Assessment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assessments')
-    started_at = models.DateTimeField(auto_now_add=True)
-    completed_at = models.DateTimeField(blank=True, null=True)
-    class Meta:
-        db_table = 'assessments'
+class CareerAssessment(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    date_taken = models.DateTimeField(auto_now_add=True)
+    
+    # Store the generated questions as JSON so we know what was asked
+    # Structure: [{"id": 1, "text": "...", "options": [...], "correct": "..."}]
+    questions_data = models.JSONField(default=list) 
+    
+    # Store user's answers
+    # Structure: {"1": "Option A", "2": "Option C"}
+    answers_data = models.JSONField(default=dict)
+    
+    # Store final scores per category
+    # Structure: {"Logical": 8, "Verbal": 7, ...}
+    scores = models.JSONField(default=dict)
 
-class Response(models.Model):
-    assessment = models.ForeignKey(
-        'Assessment',
-        on_delete=models.CASCADE,
-        related_name='responses',
-        # null=True,
-        # blank=True
-    )
-    question = models.ForeignKey('Question', on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    answer = models.TextField()
-    score = models.IntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    # Store AI generated insights (Skill-gap, 5-year plan, recommended careers)
+    insights = models.JSONField(default=dict)
+    
+    completed = models.BooleanField(default=False)
 
-    class Meta:
-        db_table = 'responses'
+    def __str__(self):
+        return f"Assessment for {self.user} on {self.date_taken}"
+

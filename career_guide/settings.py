@@ -106,20 +106,26 @@ DATABASES = {
 }
 
 # ----------------------------
-# Authentication
+#  Authentication
 # ----------------------------
 AUTH_USER_MODEL = 'users_app.User'
-
+LOGIN_URL = "/accounts/login/"   # ✅ ADD THIS
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_LOGIN_METHODS = {'email'}
+
+ACCOUNT_SIGNUP_FIELDS = [
+    'email*',
+    'password1*',
+    'password2*',
+]
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
@@ -154,6 +160,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+AI_PROVIDER = os.getenv("AI_PROVIDER", "gemini")
 GEMINI_API_KEY = os.getenv("GOOGLE_API_KEY")
 if not GEMINI_API_KEY:
     print("[WARNING] GEMINI_API_KEY NOT found in environment! AI features will use fallback data.")
